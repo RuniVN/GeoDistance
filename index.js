@@ -64,7 +64,6 @@ exports.retrieveDistance = function (data) {
         dLat = data.dLat,
         dLng = data.dLng,
         toLat = data.toLat,
-        toLng = data.toLng,
         fromLat = data.fromLat,
 
         a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
@@ -73,7 +72,7 @@ exports.retrieveDistance = function (data) {
         b = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)),
         c = earthRadius * b,
         d = (Math.round(c * Math.pow (10, decimals)) /
-            Math.pow(10, decimals)) * 1000;
+        Math.pow(10, decimals));
 
     return d;
 };
@@ -95,15 +94,13 @@ exports.retrieveDistance = function (data) {
  */
 exports.getDistance = function (from, to, orderBy, length, decimals) {
     decimals = decimals || 2;
-    length = length || 'km';
+    length = length;    // || 'km';
 
     var fromObj = from,
         toObj = to.slice(0),
         earthRadius = this.distances[length],
         fromLng = parseFloat(fromObj.lng),
         fromLat = parseFloat(fromObj.lat);
-
-    fromLat = fromLat.toRad();
 
     for (var i = to.length - 1; i >= 0; i--) {
         var lngLat = toObj[i],
@@ -115,11 +112,10 @@ exports.getDistance = function (from, to, orderBy, length, decimals) {
                 earthRadius: earthRadius,
                 decimals: decimals,
                 dLat: dLat,
-                dLng: dLng,
-                toLng: toLng,
-                fromLat: fromLat
+                dLng: dLng
             };
 
+        data.fromLat = fromLat.toRad();
         data.toLat = toLat.toRad();
 
         toObj[i].distance = this.retrieveDistance(data);
